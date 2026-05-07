@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>升级VIP - 策今排盘</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+body { font-family: -apple-system, sans-serif; background: #f5f5f5; padding: 20px; }
+.box { max-width: 500px; margin: 30px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+h2 { text-align: center; margin-bottom: 10px; }
+.price { text-align: center; font-size: 40px; color: #e74c3c; margin: 15px 0; font-weight: bold; }
+.qr { text-align: center; margin: 20px 0; }
+.qr img { width: 220px; border-radius: 8px; border: 1px solid #eee; }
+.tip { background: #fffbe6; border: 1px solid #ffe58f; padding: 14px; border-radius: 8px; margin-bottom: 20px; color: #666; font-size: 14px; line-height: 1.8; }
+.form-group { margin-bottom: 15px; }
+label { display: block; margin-bottom: 5px; color: #555; font-size: 14px; }
+input, textarea { width: 100%; padding: 11px; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; }
+button { width: 100%; padding: 14px; background: #07c160; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; }
+.back { display: block; text-align: center; margin-top: 15px; color: #4a90e2; text-decoration: none; }
+</style>
+</head>
+<body>
+
+<div class="box">
+  <h2>升级 VIP 会员</h2>
+  <div class="price">¥29.9 <span style="font-size:16px;color:#999;font-weight:normal;">/ 永久</span></div>
+  
+  <div class="tip">
+    <strong>付款步骤：</strong><br>
+    1. 保存下方赞赏码 → 微信扫码付款<br>
+    2. 付款时<strong>务必备注你的登录邮箱</strong><br>
+    3. 填写下方表单，管理员 24h 内手动开通
+  </div>
+  
+  <div class="qr">
+    <!-- 【重要】把下面这行换成你自己的微信赞赏码图片 -->
+    <img src="https://via.placeholder.com/220x220?text=微信赞赏码" alt="微信赞赏码" id="zanshang">
+    <p style="font-size:12px;color:#999;margin-top:8px;">↑ 右键图片可以保存到手机相册</p>
+  </div>
+  
+  <form id="vipForm">
+    <div class="form-group">
+      <label>你的登录邮箱</label>
+      <input type="text" id="vAccount" placeholder="注册时用的邮箱" required>
+    </div>
+    <div class="form-group">
+      <label>付款截图 或 微信单号后6位</label>
+      <textarea id="vProof" rows="2" placeholder="如：123456" required></textarea>
+    </div>
+    <div class="form-group">
+      <label>你的微信 / QQ（方便联系）</label>
+      <input type="text" id="vContact" placeholder="微信号或QQ号">
+    </div>
+    <button type="submit">提交审核</button>
+  </form>
+  
+  <a href="login.html" class="back">← 返回登录页</a>
+</div>
+
+<script>
+// ===================== 改成你的 =====================
+const SUPABASE_URL = '【改成你的Supabase URL】'
+const SUPABASE_KEY = '【改成你的Supabase anon public key】'
+// ===================================================
+
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+
+document.getElementById('vipForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const { error } = await supabase.from('vip_applications').insert({
+    account: document.getElementById('vAccount').value.trim(),
+    proof: document.getElementById('vProof').value.trim(),
+    contact: document.getElementById('vContact').value.trim(),
+    status: 'pending'
+  });
+  if (error) alert('提交失败：' + error.message);
+  else alert('提交成功！请等待审核，一般24小时内完成。');
+});
+</script>
+</body>
+</html>
